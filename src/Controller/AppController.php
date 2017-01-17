@@ -28,6 +28,28 @@ use Cake\Event\Event;
 class AppController extends Controller
 {
 
+    public function isAuthorized($user)
+    {
+        $action = $this->request->params['action'];
+ 
+        // The add and index actions are always allowed.
+        if (in_array($action, ['index', 'add', 'tags'])) {
+            return true;
+        }
+        // All other actions require an id.
+        if (empty($this->request->params['pass'][0])) {
+            return false;
+        }
+ 
+        // Check that the bookmark belongs to the current user.
+        $id = $this->request->params['pass'][0];
+        $bookmark = $this->Bookmarks->get($id);
+        if ($bookmark->user_id == $user['id']) {
+            return true;
+        }
+        return parent::isAuthorized($user);
+    }   
+
     /**
      * Initialization hook method.
      *
@@ -43,6 +65,21 @@ class AppController extends Controller
 
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
+        $this->loadComponent('Auth', [
+            'authenticate' => [
+                'Form' => [
+                    'fields' => [
+                        'username' => 'email',
+                        'password' => 'password'
+                    ]
+                ]
+            ],
+            'loginAction' => [
+                'controller' => 'Users',
+                'action' => 'login'
+            ]
+        ]);
+        $this->Auth->allow(['display']);
 
         /*
          * Enable the following components for recommended CakePHP security settings.

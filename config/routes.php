@@ -43,6 +43,19 @@ use Cake\Routing\Route\DashedRoute;
  */
 Router::defaultRouteClass(DashedRoute::class);
 
+// bookmarks/tagged/**/**/**
+Router::scope('/bookmarks', ['controller' => 'Bookmarks'], 
+   function ($routes) {
+        $routes->connect('/tagged/*', ['action' => 'tags']);
+    }
+);
+
+// load default routes
+Router::scope('/', function ($routes) {
+    $routes->connect('/', ['controller' => 'Bookmarks', 'action' => 'index']);
+    $routes->fallbacks('InflectedRoute');
+});
+
 Router::scope('/', function (RouteBuilder $routes) {
     /**
      * Here, we are connecting '/' (base path) to a controller called 'Pages',
