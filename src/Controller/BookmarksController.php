@@ -2,6 +2,8 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\ORM\TableRegistry;
+use Cake\Datasource\ConnectionManager;
 
 /**
  * Bookmarks Controller
@@ -26,8 +28,44 @@ class BookmarksController extends AppController
      //   $bookmarks = $this->paginate($this->Bookmarks);
 
      //   $this->set(compact('bookmarks'));
-     $this->set('bookmarks', $this->paginate($this->Bookmarks));
+        $this->set('bookmarks', $this->paginate($this->Bookmarks));
         $this->set('_serialize', ['bookmarks']);
+
+
+     /* ORM STUDY  begin */
+        //Ú‘±‚P
+        $article = $this->Bookmarks
+        ->find()
+        ->where(['id' => 2])
+        ->first();
+
+        debug($article->description);
+        echo "-------------<br>";
+        
+        //Ú‘±‚Q
+        $query = TableRegistry::get('bookmarks')->find();
+
+        foreach ($query as $article) {
+           //debug($article->title);
+           echo $article->title."<br>";
+        }
+        echo "<br>-------------<br>";
+        
+        //Ú‘±‚R
+        $connection = ConnectionManager::get('default');
+        $results = $connection->execute('SELECT * FROM bookmarks')->fetchAll('assoc');
+
+        foreach ($results as $result) {
+           //debug($article->title);
+           echo $result['title']."<br>";
+        }
+
+        echo "<pre>";
+        //var_dump($results);
+        echo "</pre>";
+
+
+     /* ORM STUDY  end */
     }
 
     /**
@@ -45,6 +83,9 @@ class BookmarksController extends AppController
 
         $this->set('bookmark', $bookmark);
         $this->set('_serialize', ['bookmark']);
+
+
+
     }
 
     /**
