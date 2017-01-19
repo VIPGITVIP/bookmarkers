@@ -27,6 +27,8 @@ use Cake\Event\Event;
  */
 class AppController extends Controller
 {
+    // viewClass‚ÉSmartyView‚ðŽw’è
+    // public $viewClass = 'App\View\SmartyView';
 
     public function isAuthorized($user)
     {
